@@ -50,6 +50,12 @@ const INLINE_PRECOMPILE_MODULES: ModuleConfig[] = [
   },
 ];
 
+const classifyChunk = (x: string) => {
+  return x
+    .replace(/^\w/, (x) => x.toUpperCase())
+    .replace(/-\w/, (x) => x.replace('-', '').toUpperCase());
+};
+
 export interface Options {
   // The ember-template-compiler.js module that ships within your ember-source
   // version. Mandatory when using targetFormat: 'wire'.
@@ -497,14 +503,29 @@ function insertCompiledTemplate<EnvSpecificOptions>(
     let expression = t.callExpression(templateFactoryIdentifier, [templateExpression]);
 
     if (config.rfc931Support) {
-      expression = t.callExpression(i.import('@ember/component', 'setComponentTemplate'), [
-        expression,
-        backingClass?.node ??
-          t.callExpression(
-            i.import('@ember/component/template-only', 'default', 'templateOnly'),
-            []
-          ),
-      ]);
+      const root: string = state.cwd + '/';
+      const fileChunks: string[] = state.filename.replace(root, '').split('/');
+      let componentName: string = classifyChunk(fileChunks.pop()?.split('.')[0] || '');
+      let namespace: string = fileChunks.map((x) => classifyChunk(x)).join(':');
+
+      if (!backingClass?.node && template.match(/^\w+$/)) {
+        namespace += componentName;
+        componentName = template;
+      }
+
+      expression = t.callExpression(
+        i.import('@aboveproperty/dynamic-component', 'registerComponentForDynamicTemplate'),
+        [
+          expression,
+          backingClass?.node ??
+            t.callExpression(
+              i.import('@ember/component/template-only', 'default', 'templateOnly'),
+              []
+            ),
+          babel.types.stringLiteral(namespace),
+          babel.types.stringLiteral(componentName),
+        ]
+      );
     }
     return expression;
   });
@@ -607,18 +628,34 @@ function updateCallForm<EnvSpecificOptions>(
     removeEvalAndScope(target);
     target.node.arguments = target.node.arguments.slice(0, 2);
     state.recursionGuard.add(target.node);
+
+    const root: string = state.cwd + '/';
+    const fileChunks: string[] = state.filename.replace(root, '').split('/');
+    let componentName: string = classifyChunk(fileChunks.pop()?.split('.')[0] || '');
+    let namespace: string = fileChunks.map((x) => classifyChunk(x)).join(':');
+
+    if (!backingClass?.node && transformed.match(/^\w+$/)) {
+      namespace += componentName;
+      componentName = transformed;
+    }
+
     state.util.replaceWith(target, (i) =>
-      babel.types.callExpression(i.import('@ember/component', 'setComponentTemplate'), [
-        target.node,
-        backingClass?.node ??
-          babel.types.callExpression(
-            i.import('@ember/component/template-only', 'default', 'templateOnly'),
-            []
-          ),
-      ])
+      babel.types.callExpression(
+        i.import('@aboveproperty/dynamic-component', 'registerComponentForDynamicTemplate'),
+        [
+          target.node,
+          backingClass?.node ??
+            babel.types.callExpression(
+              i.import('@ember/component/template-only', 'default', 'templateOnly'),
+              []
+            ),
+          babel.types.stringLiteral(namespace),
+          babel.types.stringLiteral(componentName),
+        ]
+      )
     );
     // we just wrapped the target callExpression in the call to
-    // setComponentTemplate. Adjust `target` back to point at the
+    // registerComponentForDynamicTemplate. Adjust `target` back to point at the
     // precompileTemplate call for the final updateScope below.
     //
     target = target.get('arguments.0') as NodePath<t.CallExpression>;
