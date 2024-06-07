@@ -506,7 +506,7 @@ function insertCompiledTemplate<EnvSpecificOptions>(
       const root: string = state.cwd + '/';
       const fileChunks: string[] = state.filename.replace(root, '').split('/');
       let componentName: string = classifyChunk(fileChunks.pop()?.split('.')[0] || '');
-      let namespace: string = fileChunks.map((x) => classifyChunk(x)).join(':');
+      let namespace: string = fileChunks.map((x) => classifyChunk(x)).join('::');
 
       if (!backingClass?.node && template.match(/^\w+$/)) {
         namespace += componentName;
@@ -632,7 +632,7 @@ function updateCallForm<EnvSpecificOptions>(
     const root: string = state.cwd + '/';
     const fileChunks: string[] = state.filename.replace(root, '').split('/');
     let componentName: string = classifyChunk(fileChunks.pop()?.split('.')[0] || '');
-    let namespace: string = fileChunks.map((x) => classifyChunk(x)).join(':');
+    let namespace: string = fileChunks.map((x) => classifyChunk(x)).join('::');
 
     if (!backingClass?.node && transformed.match(/^\w+$/)) {
       namespace += componentName;
