@@ -361,16 +361,16 @@ describe('htmlbars-inline-precompile', function () {
      * import { Setup as Foo } from '...' is done.
      * The import alias is undone, and the aliasing is moved to the usage location.
      *
-     * Being wrapped in registerComponentForDynamicTemplate is required, else the scope bag is correct
+     * Being wrapped in dynamicTemplate is required, else the scope bag is correct
      * (ie: [Setup]).
      */
     let code = `
       import { Setup } from './foo.js';
       import { precompileTemplate } from '@ember/template-compilation';
-      import { registerComponentForDynamicTemplate } from '@aboveproperty/dynamic-component';
+      import dynamicTemplate from '@aboveproperty/dynamic-template';
       import templateOnly from '@ember/component/template-only';
 
-      export default registerComponentForDynamicTemplate(precompileTemplate("<Foo />", {
+      export default dynamicTemplate(precompileTemplate("<Foo />", {
         strictMode: true,
         scope: () => ({
           Foo: Setup
@@ -384,10 +384,10 @@ describe('htmlbars-inline-precompile', function () {
 
     expect(normalized).toEqualCode(`
       import { Setup } from "./foo.js";
-      import { registerComponentForDynamicTemplate } from "@aboveproperty/dynamic-component";
+      import dynamicTemplate from "@aboveproperty/dynamic-template";
       import templateOnly from "@ember/component/template-only";
       import { createTemplateFactory } from "@ember/template-factory";
-      export default registerComponentForDynamicTemplate(
+      export default dynamicTemplate(
         createTemplateFactory(
           /*
             <Foo />
@@ -1449,7 +1449,7 @@ describe('htmlbars-inline-precompile', function () {
       `);
     });
 
-    it('emits registerComponentForDynamicTemplate and templateOnlyComponent when polyfilling rfc931 in hbs format', async function () {
+    it('emits dynamicTemplate and templateOnlyComponent when polyfilling rfc931 in hbs format', async function () {
       plugins = [
         [
           HTMLBarsInlinePrecompile,
@@ -1469,13 +1469,13 @@ describe('htmlbars-inline-precompile', function () {
       expect(transformed).toEqualCode(`
         import HelloWorld from "somewhere";
         import { precompileTemplate } from "@ember/template-compilation";
-        import { registerComponentForDynamicTemplate } from "@aboveproperty/dynamic-component";
+        import dynamicTemplate from "@aboveproperty/dynamic-template";
         import templateOnly from "@ember/component/template-only";
-        export default registerComponentForDynamicTemplate(precompileTemplate('<HelloWorld @color={{"#ff0000"}} />', { scope: () => ({ HelloWorld }), strictMode: true }), templateOnly(), "", "FooBar");
+        export default dynamicTemplate(precompileTemplate('<HelloWorld @color={{"#ff0000"}} />', { scope: () => ({ HelloWorld }), strictMode: true }), templateOnly(), "", "FooBar");
       `);
     });
 
-    it('emits registerComponentForDynamicTemplate when polyfilling rfc931 with hbs target', async function () {
+    it('emits dynamicTemplate when polyfilling rfc931 with hbs target', async function () {
       plugins = [
         [
           HTMLBarsInlinePrecompile,
@@ -1501,10 +1501,10 @@ describe('htmlbars-inline-precompile', function () {
       expect(transformed).toEqualCode(`
         import HelloWorld from "somewhere";
         import { precompileTemplate } from "@ember/template-compilation";
-        import { registerComponentForDynamicTemplate } from "@aboveproperty/dynamic-component";
+        import dynamicTemplate from "@aboveproperty/dynamic-template";
         export default class MyComponent {
           static {
-            registerComponentForDynamicTemplate(
+            dynamicTemplate(
               precompileTemplate('<HelloWorld @color={{"#ff0000"}} />', { scope: () => ({ HelloWorld }), strictMode: true }), 
               this, "", "FooBar"
             );
@@ -1513,7 +1513,7 @@ describe('htmlbars-inline-precompile', function () {
       `);
     });
 
-    it('emits registerComponentForDynamicTemplate outside a class when polyfilling rfc931 with hbs target', async function () {
+    it('emits dynamicTemplate outside a class when polyfilling rfc931 with hbs target', async function () {
       plugins = [
         [
           HTMLBarsInlinePrecompile,
@@ -1537,10 +1537,10 @@ describe('htmlbars-inline-precompile', function () {
       expect(transformed).toEqualCode(`
         import HelloWorld from "somewhere";
         import { precompileTemplate } from "@ember/template-compilation";
-        import { registerComponentForDynamicTemplate } from "@aboveproperty/dynamic-component";
+        import dynamicTemplate from "@aboveproperty/dynamic-template";
         export default class MyComponent {
         }
-        registerComponentForDynamicTemplate(
+        dynamicTemplate(
           precompileTemplate('<HelloWorld @color={{"#ff0000"}} />', { scope: () => ({ HelloWorld }), strictMode: true }), 
           MyComponent, "", "FooBar"
         );
@@ -1582,12 +1582,12 @@ describe('htmlbars-inline-precompile', function () {
       expect(transformed).toEqualCode(`
         import Component from "@glimmer/component";
         import { precompileTemplate } from "@ember/template-compilation";
-        import { registerComponentForDynamicTemplate } from "@aboveproperty/dynamic-component";
+        import dynamicTemplate from "@aboveproperty/dynamic-template";
         import templateOnly from "@ember/component/template-only";
         export default class Test extends Component {
           foo = 1;
           static {
-            registerComponentForDynamicTemplate(
+            dynamicTemplate(
               precompileTemplate("<Icon />", {
                 strictMode: true,
                 scope: () => ({
@@ -1598,7 +1598,7 @@ describe('htmlbars-inline-precompile', function () {
             );
           }
         }
-        const Icon = registerComponentForDynamicTemplate(
+        const Icon = dynamicTemplate(
           precompileTemplate("Icon", {
             strictMode: true,
           }),
@@ -1627,9 +1627,9 @@ describe('htmlbars-inline-precompile', function () {
       expect(transformed).toEqualCode(`
         import HelloWorld from "somewhere";
         import { precompileTemplate } from "@ember/template-compilation";
-        import { registerComponentForDynamicTemplate } from "@aboveproperty/dynamic-component";
+        import dynamicTemplate from "@aboveproperty/dynamic-template";
         import templateOnly from "@ember/component/template-only";
-        export default registerComponentForDynamicTemplate(precompileTemplate('<HelloWorld />', { strictMode: false, scope: () => ({ HelloWorld }) }), templateOnly(), "", "FooBar");
+        export default dynamicTemplate(precompileTemplate('<HelloWorld />', { strictMode: false, scope: () => ({ HelloWorld }) }), templateOnly(), "", "FooBar");
       `);
     });
   });
@@ -1667,7 +1667,7 @@ describe('htmlbars-inline-precompile', function () {
     `);
   });
 
-  it('emits registerComponentForDynamicTemplate and templateOnlyComponent when compiling rfc931 to wire format', async function () {
+  it('emits dynamicTemplate and templateOnlyComponent when compiling rfc931 to wire format', async function () {
     plugins = [
       [
         HTMLBarsInlinePrecompile,
@@ -1687,10 +1687,10 @@ describe('htmlbars-inline-precompile', function () {
 
     expect(normalizeWireFormat(transformed)).toEqualCode(`
       import HelloWorld from "somewhere";
-      import { registerComponentForDynamicTemplate } from "@aboveproperty/dynamic-component";
+      import dynamicTemplate from "@aboveproperty/dynamic-template";
       import { createTemplateFactory } from "@ember/template-factory";
       import templateOnly from "@ember/component/template-only";
-      export default registerComponentForDynamicTemplate(createTemplateFactory(
+      export default dynamicTemplate(createTemplateFactory(
         /*
           <HelloWorld />
       */
@@ -1705,7 +1705,7 @@ describe('htmlbars-inline-precompile', function () {
     `);
   });
 
-  it('emits registerComponentForDynamicTemplate when compiling rfc931 to wire format', async function () {
+  it('emits dynamicTemplate when compiling rfc931 to wire format', async function () {
     plugins = [
       [
         HTMLBarsInlinePrecompile,
@@ -1731,11 +1731,11 @@ describe('htmlbars-inline-precompile', function () {
 
     expect(normalizeWireFormat(transformed)).toEqualCode(`
       import HelloWorld from "somewhere";
-      import { registerComponentForDynamicTemplate } from "@aboveproperty/dynamic-component";
+      import dynamicTemplate from "@aboveproperty/dynamic-template";
       import { createTemplateFactory } from "@ember/template-factory";
       export default class {
         static {
-          registerComponentForDynamicTemplate(
+          dynamicTemplate(
             createTemplateFactory(
               /*
                 <HelloWorld />
@@ -1928,9 +1928,9 @@ describe('htmlbars-inline-precompile', function () {
       expect(transformed).toEqualCode(`
         import HelloWorld from "somewhere";
         import { precompileTemplate } from "@ember/template-compilation";
-        import { registerComponentForDynamicTemplate } from "@aboveproperty/dynamic-component";
+        import dynamicTemplate from "@aboveproperty/dynamic-template";
         import templateOnly from "@ember/component/template-only";
-        export default registerComponentForDynamicTemplate(precompileTemplate('<HelloWorld />', { strictMode: true, scope: () => ({ HelloWorld }) }), templateOnly(), "", "FooBar");
+        export default dynamicTemplate(precompileTemplate('<HelloWorld />', { strictMode: true, scope: () => ({ HelloWorld }) }), templateOnly(), "", "FooBar");
       `);
     });
 
@@ -1989,10 +1989,10 @@ describe('htmlbars-inline-precompile', function () {
 
       expect(transformed).toEqualCode(`
         import { precompileTemplate } from "@ember/template-compilation";
-        import { registerComponentForDynamicTemplate } from "@aboveproperty/dynamic-component";
+        import dynamicTemplate from "@aboveproperty/dynamic-template";
         import templateOnly from "@ember/component/template-only";
         let div = 1;
-        export default registerComponentForDynamicTemplate(precompileTemplate('<div></div>', { strictMode: true, scope: () => ({ div })}), templateOnly(), "", "FooBar");
+        export default dynamicTemplate(precompileTemplate('<div></div>', { strictMode: true, scope: () => ({ div })}), templateOnly(), "", "FooBar");
       `);
     });
 
@@ -2016,10 +2016,10 @@ describe('htmlbars-inline-precompile', function () {
 
       expect(transformed).toEqualCode(`
         import { precompileTemplate } from "@ember/template-compilation";
-        import { registerComponentForDynamicTemplate } from "@aboveproperty/dynamic-component";
+        import dynamicTemplate from "@aboveproperty/dynamic-template";
         import templateOnly from "@ember/component/template-only";
         let hasBlock = 1;
-        export default registerComponentForDynamicTemplate(precompileTemplate('{{hasBlock "thing"}}', { strictMode: true, scope: () => ({ hasBlock }) }), templateOnly(), "", "FooBar");
+        export default dynamicTemplate(precompileTemplate('{{hasBlock "thing"}}', { strictMode: true, scope: () => ({ hasBlock }) }), templateOnly(), "", "FooBar");
       `);
     });
 
@@ -2231,9 +2231,9 @@ describe('htmlbars-inline-precompile', function () {
 
       expect(transformed).toEqualCode(`
         import { precompileTemplate } from "@ember/template-compilation";
-        import { registerComponentForDynamicTemplate } from "@aboveproperty/dynamic-component";
+        import dynamicTemplate from "@aboveproperty/dynamic-template";
         import templateOnly from "@ember/component/template-only";
-        export default registerComponentForDynamicTemplate(precompileTemplate('{{hasBlock "thing"}}', { strictMode: true }), templateOnly(), "", "FooBar");
+        export default dynamicTemplate(precompileTemplate('{{hasBlock "thing"}}', { strictMode: true }), templateOnly(), "", "FooBar");
       `);
     });
 
@@ -2257,10 +2257,10 @@ describe('htmlbars-inline-precompile', function () {
 
       expect(normalizeWireFormat(transformed)).toEqualCode(`
         import HelloWorld from "somewhere";
-        import { registerComponentForDynamicTemplate } from "@aboveproperty/dynamic-component";
+        import dynamicTemplate from "@aboveproperty/dynamic-template";
         import { createTemplateFactory } from "@ember/template-factory";
         import templateOnly from "@ember/component/template-only";
-        export default registerComponentForDynamicTemplate(
+        export default dynamicTemplate(
           createTemplateFactory(
             /*
               <HelloWorld />
@@ -2300,9 +2300,9 @@ describe('htmlbars-inline-precompile', function () {
       expect(transformed).toEqualCode(`
         import HelloWorld from "somewhere";
         import { precompileTemplate } from "@ember/template-compilation";
-        import { registerComponentForDynamicTemplate } from "@aboveproperty/dynamic-component";
+        import dynamicTemplate from "@aboveproperty/dynamic-template";
         import templateOnly from "@ember/component/template-only";
-        export default registerComponentForDynamicTemplate(precompileTemplate('<HelloWorld />', { strictMode: true, scope: () => ({ HelloWorld }) }), templateOnly(), "", "FooBar");
+        export default dynamicTemplate(precompileTemplate('<HelloWorld />', { strictMode: true, scope: () => ({ HelloWorld }) }), templateOnly(), "", "FooBar");
       `);
     });
 
@@ -2330,11 +2330,11 @@ describe('htmlbars-inline-precompile', function () {
 
       expect(transformed).toEqualCode(`
         import { precompileTemplate } from "@ember/template-compilation";
-        import { registerComponentForDynamicTemplate } from "@aboveproperty/dynamic-component";
+        import dynamicTemplate from "@aboveproperty/dynamic-template";
         import templateOnly from "@ember/component/template-only";
         export default function() {
           let { HelloWorld } = globalThis;
-          return registerComponentForDynamicTemplate(precompileTemplate('<HelloWorld />', { strictMode: true, scope: () => ({ HelloWorld })}), templateOnly(), "", "FooBar");
+          return dynamicTemplate(precompileTemplate('<HelloWorld />', { strictMode: true, scope: () => ({ HelloWorld })}), templateOnly(), "", "FooBar");
         }
       `);
     });
@@ -2370,10 +2370,10 @@ describe('htmlbars-inline-precompile', function () {
 
       expect(normalizeWireFormat(transformed)).toEqualCode(`
     import HelloWorld from 'somewhere';
-    import { registerComponentForDynamicTemplate } from "@aboveproperty/dynamic-component";
+    import dynamicTemplate from "@aboveproperty/dynamic-template";
     import { createTemplateFactory } from "@ember/template-factory";
     import templateOnly from "@ember/component/template-only";
-    export default registerComponentForDynamicTemplate(
+    export default dynamicTemplate(
       createTemplateFactory(
         /*
           <HelloWorld />
@@ -2417,9 +2417,9 @@ describe('htmlbars-inline-precompile', function () {
       expect(transformed).toEqualCode(`
           import HelloWorld from "somewhere";
           import { precompileTemplate } from "@ember/template-compilation";
-          import { registerComponentForDynamicTemplate } from "@aboveproperty/dynamic-component";
+          import dynamicTemplate from "@aboveproperty/dynamic-template";
           import templateOnly from "@ember/component/template-only";
-          const MyComponent = registerComponentForDynamicTemplate(precompileTemplate('<HelloWorld />', { strictMode: true, scope: () => ({ HelloWorld })  }), templateOnly(), "", "FooBar");
+          const MyComponent = dynamicTemplate(precompileTemplate('<HelloWorld />', { strictMode: true, scope: () => ({ HelloWorld })  }), templateOnly(), "", "FooBar");
         `);
     });
 
@@ -2482,10 +2482,10 @@ describe('htmlbars-inline-precompile', function () {
       expect(transformed).toEqualCode(`
           import HelloWorld from "somewhere";
           import { precompileTemplate } from "@ember/template-compilation";
-          import { registerComponentForDynamicTemplate } from "@aboveproperty/dynamic-component";
+          import dynamicTemplate from "@aboveproperty/dynamic-template";
           export default class {
             static {
-              registerComponentForDynamicTemplate(precompileTemplate('<HelloWorld />', { strictMode: true, scope: () => ({ HelloWorld }) }), this, "", "FooBar");
+              dynamicTemplate(precompileTemplate('<HelloWorld />', { strictMode: true, scope: () => ({ HelloWorld }) }), this, "", "FooBar");
             }
           }
         `);
@@ -2518,11 +2518,11 @@ describe('htmlbars-inline-precompile', function () {
       expect(transformed).toEqualCode(`
           import HelloWorld from "somewhere";
           import { precompileTemplate } from "@ember/template-compilation";
-          import { registerComponentForDynamicTemplate } from "@aboveproperty/dynamic-component";
+          import dynamicTemplate from "@aboveproperty/dynamic-template";
           export default class {
             h = HelloWorld;
             static {
-              registerComponentForDynamicTemplate(precompileTemplate('<this.h />', { strictMode: true }), this, "", "FooBar");
+              dynamicTemplate(precompileTemplate('<this.h />', { strictMode: true }), this, "", "FooBar");
             }
           }
         `);
