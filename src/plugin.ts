@@ -153,6 +153,7 @@ interface State<EnvSpecificOptions> {
   lastInsertedPath: NodePath<t.Statement> | undefined;
   filename: string;
   recursionGuard: Set<unknown>;
+  cwd: string;
 }
 
 export function makePlugin<EnvSpecificOptions>(loadOptions: (opts: EnvSpecificOptions) => Options) {
@@ -506,15 +507,15 @@ function insertCompiledTemplate<EnvSpecificOptions>(
       const root: string = state.cwd + '/';
       const fileChunks: string[] = state.filename.replace(root, '').split('/');
       let componentName: string = classifyChunk(fileChunks.pop()?.split('.')[0] || '');
-      let namespace: string = fileChunks.map((x) => classifyChunk(x)).join('::');
+      let namespace: string = fileChunks.map((x) => classifyChunk(x)).join('.').replace(/^(.*?)Components\.?/gm, '');
 
       if (!backingClass?.node && template.match(/^\w+$/)) {
-        namespace += componentName;
+        namespace += namespace ? `.${componentName}` : componentName;
         componentName = template;
       }
 
       expression = t.callExpression(
-        i.import('@aboveproperty/dynamic-component', 'registerComponentForDynamicTemplate'),
+        i.import('@aboveproperty/dynamic-template', 'default', 'dynamicTemplate'),
         [
           expression,
           backingClass?.node ??
@@ -632,16 +633,16 @@ function updateCallForm<EnvSpecificOptions>(
     const root: string = state.cwd + '/';
     const fileChunks: string[] = state.filename.replace(root, '').split('/');
     let componentName: string = classifyChunk(fileChunks.pop()?.split('.')[0] || '');
-    let namespace: string = fileChunks.map((x) => classifyChunk(x)).join('::');
+    let namespace: string = fileChunks.map((x) => classifyChunk(x)).join('.').replace(/^(.*?)Components\.?/gm, '');
 
     if (!backingClass?.node && transformed.match(/^\w+$/)) {
-      namespace += componentName;
+      namespace += namespace ? `.${componentName}` : componentName;
       componentName = transformed;
     }
 
     state.util.replaceWith(target, (i) =>
       babel.types.callExpression(
-        i.import('@aboveproperty/dynamic-component', 'registerComponentForDynamicTemplate'),
+        i.import('@aboveproperty/dynamic-template', 'default', 'dynamicTemplate'),
         [
           target.node,
           backingClass?.node ??
