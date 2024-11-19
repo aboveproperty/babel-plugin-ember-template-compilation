@@ -53,7 +53,7 @@ const INLINE_PRECOMPILE_MODULES: ModuleConfig[] = [
 const classifyChunk = (x: string) => {
   return x
     .replace(/^\w/, (x) => x.toUpperCase())
-    .replace(/-\w/, (x) => x.replace('-', '').toUpperCase());
+    .replace(/-\w/g, (x) => x.replace('-', '').toUpperCase());
 };
 
 export interface Options {
