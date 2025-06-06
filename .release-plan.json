@@ -2,20 +2,16 @@
   "solution": {
     "babel-plugin-ember-template-compilation": {
       "impact": "patch",
-      "oldVersion": "2.2.4",
-      "newVersion": "2.2.5",
+      "oldVersion": "2.4.0",
+      "newVersion": "2.4.1",
       "constraints": [
         {
           "impact": "patch",
           "reason": "Appears in changelog section :bug: Bug Fix"
-        },
-        {
-          "impact": "patch",
-          "reason": "Appears in changelog section :house: Internal"
         }
       ],
       "pkgJSONPath": "./package.json"
     }
   },
-  "description": "## Release (2024-05-10)\n\nbabel-plugin-ember-template-compilation 2.2.5 (patch)\n\n#### :bug: Bug Fix\n* `babel-plugin-ember-template-compilation`\n  * [#53](https://github.com/emberjs/babel-plugin-ember-template-compilation/pull/53) Problem with generating scope locals (the wire format array) when scope bag (the object) has aliasing properties (non-shorthand) ([@NullVoxPopuli](https://github.com/NullVoxPopuli))\n  * [#54](https://github.com/emberjs/babel-plugin-ember-template-compilation/pull/54) fix 🎬 2 ([@patricklx](https://github.com/patricklx))\n\n#### :house: Internal\n* `babel-plugin-ember-template-compilation`\n  * [#55](https://github.com/emberjs/babel-plugin-ember-template-compilation/pull/55) replace babel.parse with babel.template.expression.ast ([@patricklx](https://github.com/patricklx))\n\n#### Committers: 2\n- Patrick Pircher ([@patricklx](https://github.com/patricklx))\n- [@NullVoxPopuli](https://github.com/NullVoxPopuli)\n"
+  "description": "## Release (2025-03-26)\n\nbabel-plugin-ember-template-compilation 2.4.1 (patch)\n\n#### :bug: Bug Fix\n* `babel-plugin-ember-template-compilation`\n  * [#80](https://github.com/emberjs/babel-plugin-ember-template-compilation/pull/80) Fix incorrect \"this\" binding when there's a TypeScript `this` arg in scope ([@ef4](https://github.com/ef4))\n\n#### Committers: 1\n- Edward Faulkner ([@ef4](https://github.com/ef4))\n\n"
 }

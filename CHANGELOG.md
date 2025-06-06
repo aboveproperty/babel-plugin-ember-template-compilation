@@ -1,5 +1,53 @@
 # Changelog
 
+## Release (2025-03-26)
+
+babel-plugin-ember-template-compilation 2.4.1 (patch)
+
+#### :bug: Bug Fix
+* `babel-plugin-ember-template-compilation`
+  * [#80](https://github.com/emberjs/babel-plugin-ember-template-compilation/pull/80) Fix incorrect "this" binding when there's a TypeScript `this` arg in scope ([@ef4](https://github.com/ef4))
+
+#### Committers: 1
+- Edward Faulkner ([@ef4](https://github.com/ef4))
+
+## Release (2025-03-20)
+
+babel-plugin-ember-template-compilation 2.4.0 (minor)
+
+#### :rocket: Enhancement
+* `babel-plugin-ember-template-compilation`
+  * [#67](https://github.com/emberjs/babel-plugin-ember-template-compilation/pull/67) Lexical this ([@ef4](https://github.com/ef4))
+  * [#68](https://github.com/emberjs/babel-plugin-ember-template-compilation/pull/68) default globals implementation ([@NullVoxPopuli](https://github.com/NullVoxPopuli))
+
+#### :bug: Bug Fix
+* `babel-plugin-ember-template-compilation`
+  * [#66](https://github.com/emberjs/babel-plugin-ember-template-compilation/pull/66) Widen @glimmer/syntax range ([@NullVoxPopuli](https://github.com/NullVoxPopuli))
+
+#### :house: Internal
+* `babel-plugin-ember-template-compilation`
+  * [#73](https://github.com/emberjs/babel-plugin-ember-template-compilation/pull/73) Make our tests use async babel ([@ef4](https://github.com/ef4))
+
+#### Committers: 2
+- Edward Faulkner ([@ef4](https://github.com/ef4))
+- [@NullVoxPopuli](https://github.com/NullVoxPopuli)
+
+## Release (2024-09-09)
+
+babel-plugin-ember-template-compilation 2.3.0 (minor)
+
+#### :rocket: Enhancement
+* `babel-plugin-ember-template-compilation`
+  * [#62](https://github.com/emberjs/babel-plugin-ember-template-compilation/pull/62) Provide a default compilerPath ([@ef4](https://github.com/ef4))
+
+#### :house: Internal
+* `babel-plugin-ember-template-compilation`
+  * [#59](https://github.com/emberjs/babel-plugin-ember-template-compilation/pull/59) update dependencies ([@patricklx](https://github.com/patricklx))
+
+#### Committers: 2
+- Edward Faulkner ([@ef4](https://github.com/ef4))
+- Patrick Pircher ([@patricklx](https://github.com/patricklx))
+
 ## Release (2024-05-10)
 
 babel-plugin-ember-template-compilation 2.2.5 (patch)
